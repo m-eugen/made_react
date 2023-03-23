@@ -1,1 +1,8 @@
-Array.from({ length: 12 }, (_, i) => console.log(i + 1))
+const data = 'str'
+export const newFunction = (data) => {
+    return 2 + data
+}
+
+const res = newFunction(data)
+
+console.log(res)
