@@ -96,14 +96,20 @@
         };
       }
 
+      const vDom = {
+        createElement: (type, props) => {
+          return {
+            type,
+            props,
+          };
+        },
+      };
+
       function Logo() {
-        return {
-          type: "img",
-          props: {
-            className: "logo",
-            src: "logo.png",
-          },
-        };
+        return vDom.createElement("img", {
+          className: "logo",
+          src: "logo.png",
+        });
       }
 
       function Clock({ time }) {
