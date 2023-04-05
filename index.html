@@ -9,6 +9,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="./style.css" />
     <title>Document</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
   </head>
   <body>
     <div id="root"></div>
@@ -60,137 +68,101 @@
         lots: null,
       };
 
+      // implementation function createElement react
+
+      // const vDom = {
+      //   createElement: (type, config, ...children) => {
+      //     const key = config?.key || null;
+      //     const props = config || {};
+      //
+      //     if (children.length === 1) {
+      //       props.children = children[0];
+      //     } else {
+      //       props.children = children;
+      //     }
+      //
+      //     return {
+      //       type,
+      //       key,
+      //       props,
+      //     };
+      //   },
+      // };
+
+      //implementation function createElement react
+
       function App({ state }) {
-        return {
-          type: "div",
-          props: {
-            className: "app",
-            children: [
-              {
-                type: Header,
-              },
-              {
-                type: Clock,
-                props: { time: state.time },
-              },
-              {
-                type: Lots,
-                props: { lots: state.lots },
-              },
-            ],
-          },
-        };
+        return React.createElement(
+          "div",
+          { className: "app" },
+          React.createElement(Header),
+          React.createElement(Clock, { time: state.time }),
+          React.createElement(Lots, { lots: state.lots })
+        );
       }
 
       function Header() {
-        return {
-          type: "header",
-          props: {
+        return React.createElement(
+          "header",
+          {
             className: "header",
-            children: [
-              {
-                type: Logo,
-              },
-            ],
           },
-        };
+          React.createElement(Logo)
+        );
       }
 
       function Logo() {
-        return {
-          type: "img",
-          props: {
-            className: "logo",
-            src: "logo.png",
-          },
-        };
+        return React.createElement("img", {
+          className: "logo",
+          src: "logo.png",
+        });
       }
 
       function Clock({ time }) {
         const isDay = time.getHours() >= 7 && time.getHours() <= 21;
-
-        return {
-          type: "div",
-          props: {
-            className: "clock",
-            children: [
-              {
-                type: "span",
-                props: {
-                  className: "value",
-                  children: [time.toLocaleTimeString("en-US")],
-                },
-              },
-              {
-                type: "span",
-                props: {
-                  className: isDay ? "icon day" : "icon night",
-                },
-              },
-            ],
-          },
-        };
+        return React.createElement(
+          "div",
+          { className: "clock" },
+          React.createElement(
+            "span",
+            { className: "value" },
+            time.toLocaleTimeString("en-US")
+          ),
+          React.createElement("span", {
+            className: isDay ? "icon day" : "icon night",
+          })
+        );
       }
 
       function Loading() {
-        return {
-          type: "div",
-          props: {
-            className: "loading",
-            children: ["Loading..."],
-          },
-        };
+        return React.createElement(
+          "div",
+          { className: "loading" },
+          "Loading..."
+        );
       }
       function Lots({ lots }) {
         if (lots === null) {
-          return {
-            type: Loading,
-            props: {},
-          };
+          return React.createElement(Loading);
         }
 
-        return {
-          type: "div",
-          props: {
-            className: "lots",
-            children: lots.map((lot) => ({
-              type: Lot,
-              props: { lot },
-            })),
-          },
-        };
+        return React.createElement(
+          "div",
+          { className: "lots" },
+          lots.map((lot) => React.createElement(Lot, { lot, key: lot.id }))
+        );
       }
 
-      function Lot({ lot }) {
-        return {
-          type: "article",
-          key: lot.id,
-          props: {
-            className: "lot",
-            children: [
-              {
-                type: "div",
-                props: {
-                  className: "price",
-                  children: [lot.price],
-                },
-              },
-              {
-                type: "h1",
-                props: {
-                  children: [lot.name],
-                },
-              },
-              {
-                type: "p",
-                props: {
-                  children: [lot.description],
-                },
-              },
-            ],
-          },
-        };
+      function Lot({ lot, key }) {
+        return React.createElement(
+          "article",
+          { className: "lot", key },
+          React.createElement("div", { className: "price" }, lot.price),
+          React.createElement("h1", {}, lot.name),
+          React.createElement("p", {}, lot.description)
+        );
       }
+
       /* Create Timer */
       setInterval(() => {
         state = {
@@ -228,116 +200,123 @@
       });
       /* Render function */
       function renderView(state) {
-        render(App({ state }), document.getElementById("root"));
+        ReactDOM.render(
+          React.createElement(App, { state }),
+          document.getElementById("root")
+        );
       }
 
       renderView(state);
-
       /* end render function */
-      function render(virtualDom, realDomRoot) {
-        const evaluateVirtualDom = evaluate(virtualDom);
 
-        const virtualDomRoot = {
-          type: realDomRoot.tagName.toLowerCase(),
-          props: {
-            id: realDomRoot.id,
-            ...realDomRoot.attributes,
-            children: [evaluateVirtualDom],
-          },
-        };
+      // implementation render function ReactDOM
 
-        sync(virtualDomRoot, realDomRoot);
-      }
+      // function render(virtualDom, realDomRoot) {
+      //   const evaluateVirtualDom = evaluate(virtualDom);
+      //
+      //   const virtualDomRoot = {
+      //     type: realDomRoot.tagName.toLowerCase(),
+      //     props: {
+      //       id: realDomRoot.id,
+      //       ...realDomRoot.attributes,
+      //       children: [evaluateVirtualDom],
+      //     },
+      //   };
+      //
+      //   sync(virtualDomRoot, realDomRoot);
+      // }
+      //
+      // function evaluate(virtualNode) {
+      //   if (typeof virtualNode !== "object") {
+      //     return virtualNode;
+      //   }
+      //
+      //   if (typeof virtualNode.type === "function") {
+      //     // prettier-ignore
+      //     return evaluate((virtualNode.type)(virtualNode.props));
+      //   }
+      //
+      //   const props = virtualNode.props || {};
+      //
+      //   return {
+      //     ...virtualNode,
+      //     props: {
+      //       ...props,
+      //       children: Array.isArray(props.children)
+      //         ? props.children.map(evaluate)
+      //         : [evaluate(props.children)],
+      //     },
+      //   };
+      // }
+      // function sync(virtualNode, realNode) {
+      //   if (virtualNode.props) {
+      //     Object.entries(virtualNode.props).forEach(([name, value]) => {
+      //       if (name === value && name === "key") return;
+      //       if (realNode[name] !== value) {
+      //         realNode[name] = value;
+      //       }
+      //     });
+      //   }
+      //
+      //   if (virtualNode.key) {
+      //     realNode.dataset.key = virtualNode.key;
+      //   }
+      //
+      //   if (typeof virtualNode !== "object" && virtualNode !== realNode.value) {
+      //     realNode.nodeValue = virtualNode;
+      //   }
+      //
+      //   //Sync child nodes
+      //   const virtualChildren = virtualNode.props
+      //     ? virtualNode.props.children || []
+      //     : [];
+      //   const realChildren = realNode.childNodes;
+      //
+      //   for (
+      //     let i = 0;
+      //     i < virtualChildren.length || i < realChildren.length;
+      //     i++
+      //   ) {
+      //     const virtual = virtualChildren[i];
+      //     const real = realChildren[i];
+      //     // Remove
+      //     if (virtual === undefined && real !== undefined) {
+      //       realNode.remove(real);
+      //     }
+      //     // Update
+      //     if (
+      //       virtual !== undefined &&
+      //       real !== undefined &&
+      //       (virtual.type || "") === (real.tagName || "").toLowerCase()
+      //     ) {
+      //       sync(virtual, real);
+      //     }
+      //     // Replace
+      //     if (
+      //       virtual !== undefined &&
+      //       real !== undefined &&
+      //       (virtual.type || "") !== (real.tagName || "").toLowerCase()
+      //     ) {
+      //       const newReal = createRealNodeByVirtual(virtual);
+      //       sync(virtual, newReal);
+      //       realNode.replaceChild(newReal, real);
+      //     }
+      //     // Add
+      //     if (virtual !== undefined && real === undefined) {
+      //       const newReal = createRealNodeByVirtual(virtual);
+      //       sync(virtual, newReal);
+      //       realNode.appendChild(newReal);
+      //     }
+      //   }
+      // }
+      // function createRealNodeByVirtual(virtual) {
+      //   if (typeof virtual !== "object") {
+      //     return document.createTextNode("");
+      //   }
+      //   return document.createElement(virtual.type);
+      // }
 
-      function evaluate(virtualNode) {
-        if (typeof virtualNode !== "object") {
-          return virtualNode;
-        }
-
-        if (typeof virtualNode.type === "function") {
-          // prettier-ignore
-          return evaluate((virtualNode.type)(virtualNode.props));
-        }
-
-        const props = virtualNode.props || {};
-
-        return {
-          ...virtualNode,
-          props: {
-            ...props,
-            children: Array.isArray(props.children)
-              ? props.children.map(evaluate)
-              : [evaluate(props.children)],
-          },
-        };
-      }
-      function sync(virtualNode, realNode) {
-        if (virtualNode.props) {
-          Object.entries(virtualNode.props).forEach(([name, value]) => {
-            if (name === value && name === "key") return;
-            if (realNode[name] !== value) {
-              realNode[name] = value;
-            }
-          });
-        }
-
-        if (virtualNode.key) {
-          realNode.dataset.key = virtualNode.key;
-        }
-
-        if (typeof virtualNode !== "object" && virtualNode !== realNode.value) {
-          realNode.nodeValue = virtualNode;
-        }
-
-        //Sync child nodes
-        const virtualChildren = virtualNode.props
-          ? virtualNode.props.children || []
-          : [];
-        const realChildren = realNode.childNodes;
-
-        for (
-          let i = 0;
-          i < virtualChildren.length || i < realChildren.length;
-          i++
-        ) {
-          const virtual = virtualChildren[i];
-          const real = realChildren[i];
-          // Remove
-          if (virtual === undefined && real !== undefined) {
-            realNode.remove(real);
-          }
-          // Update
-          if (
-            virtual !== undefined &&
-            real !== undefined &&
-            (virtual.type || "") === (real.tagName || "").toLowerCase()
-          ) {
-            sync(virtual, real);
-          }
-          // Replace
-          if (
-            virtual !== undefined &&
-            real !== undefined &&
-            (virtual.type || "") !== (real.tagName || "").toLowerCase()
-          ) {
-            const newReal = createRealNodeByVirtual(virtual);
-            sync(virtual, newReal);
-            realNode.replaceChild(newReal, real);
-          }
-          // Add
-          if (virtual !== undefined && real === undefined) {
-            const newReal = createRealNodeByVirtual(virtual);
-            sync(virtual, newReal);
-            realNode.appendChild(newReal);
-          }
-        }
-      }
-      function createRealNodeByVirtual(virtual) {
-        if (typeof virtual !== "object") {
-          return document.createTextNode("");
-        }
-        return document.createElement(virtual.type);
-      }
+      // end implementation function render
     </script>
   </body>
 </html>
