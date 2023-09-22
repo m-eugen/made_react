@@ -17,6 +17,12 @@ const api = {
                 description: "Orange description",
                 price: 41,
               },
+              {
+                id: 3,
+                name: "Banana",
+                description: "Banana description",
+                price: 32,
+              }
             ]);
           }, 1000);
         });
